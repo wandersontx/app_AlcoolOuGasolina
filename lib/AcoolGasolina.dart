@@ -6,7 +6,9 @@ class AlcoolGasolina extends StatefulWidget {
 }
 
 class _AlcoolGasolinaState extends State<AlcoolGasolina> {
-  TextEditingController _textEditingController = TextEditingController();
+  TextEditingController _alcool = TextEditingController();
+  TextEditingController _gasolina = TextEditingController();
+  var _resultado = '';
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +43,7 @@ class _AlcoolGasolinaState extends State<AlcoolGasolina> {
                   style: TextStyle(
                     fontSize: 22,
                   ),
-                  controller: _textEditingController,
+                  controller: _alcool,
                 ),
                 TextField(
                   keyboardType: TextInputType.number,
@@ -50,7 +52,7 @@ class _AlcoolGasolinaState extends State<AlcoolGasolina> {
                   style: TextStyle(
                     fontSize: 22,
                   ),
-                  controller: _textEditingController,
+                  controller: _gasolina,
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 10),
@@ -58,7 +60,7 @@ class _AlcoolGasolinaState extends State<AlcoolGasolina> {
                     color: Colors.blue,
                     textColor: Colors.white,
                     padding: EdgeInsets.all(15),
-                    onPressed: () {},
+                    onPressed: () => _calcular(),
                     child: Text(
                       'Calcular',
                       style: TextStyle(fontSize: 20),
@@ -68,7 +70,7 @@ class _AlcoolGasolinaState extends State<AlcoolGasolina> {
                 Padding(
                   padding: EdgeInsets.only(top: 20),
                   child: Text(
-                    'Resultado',
+                    _resultado,
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),
                 )
@@ -76,5 +78,31 @@ class _AlcoolGasolinaState extends State<AlcoolGasolina> {
             )),
       ),
     );
+  }
+
+  void _calcular() {
+    var precoAlcool = double.tryParse(this._alcool.text.replaceAll(',', '.'));
+    var precoGasolina =
+        double.tryParse(this._gasolina.text.replaceAll(',', '.'));
+    var melhorOpcao =
+        'Erro ao realizar cálculo, favor inserir os dados novamente.';
+
+    if (precoAlcool != null &&
+        precoGasolina != null &&
+        precoGasolina > 0.0 &&
+        precoAlcool > 0.0) {
+      melhorOpcao = (precoAlcool / precoGasolina) > 0.7
+          ? 'Abasteça com GASOLINA'
+          : 'Abasteça com ÁLCOOL';
+    }
+    setState(() {
+      this._resultado = melhorOpcao;
+      this._limparCampos();
+    });
+  }
+
+  void _limparCampos() {
+    this._alcool.text = '';
+    this._gasolina.text = '';
   }
 }
